@@ -6,6 +6,7 @@ import { taskApi } from "@/lib/api";
 import { TaskList } from "@/components/tasks/task-list";
 import { CreateTaskDialog } from "@/components/tasks/create-task-dialog";
 import { useToast } from "@/hooks/use-toast";
+import { ModeToggle } from "@/components/ui/mode-toggle";
 
 export default function Home() {
   const [tasks, setTasks] = useState<Task[]>([]);
@@ -108,8 +109,13 @@ export default function Home() {
     <main className="container mx-auto py-10">
       <div className="max-w-4xl mx-auto">
         <div className="flex items-center justify-between mb-8">
-          <h1 className="text-3xl font-bold">Task Management</h1>
-          <CreateTaskDialog onTaskCreate={handleCreateTask} />
+          <div className="title">
+            <h1 className="text-3xl font-bold">Task Management</h1>
+          </div>
+          <div className="action flex items-center gap-4">
+            <CreateTaskDialog onTaskCreate={handleCreateTask} />
+            <ModeToggle />
+          </div>
         </div>
 
         {tasks.length === 0 ? (
