@@ -32,48 +32,54 @@ export function CreateTaskDialog({ onTaskCreate }: CreateTaskDialogProps) {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button>
+        <Button className="gradient-primary text-white hover:opacity-90 transition-opacity rounded">
           <Plus className="mr-2 h-4 w-4" /> Add New Task
         </Button>
       </DialogTrigger>
-      <DialogContent>
+      <DialogContent className="bg-white border-none shadow-xl">
         <DialogHeader>
-          <DialogTitle>Create New Task</DialogTitle>
+          <DialogTitle className="text-xl font-semibold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
+            Create New Task
+          </DialogTitle>
         </DialogHeader>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="space-y-2">
-            <label htmlFor="title" className="text-sm font-medium">
-              Title
-            </label>
+            <label className="text-sm font-medium text-gray-700">Title</label>
             <Input
-              id="title"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
+              className="border-gray-200 focus:border-indigo-500 focus:ring-indigo-500 rounded"
               placeholder="Enter task title"
               required
             />
           </div>
           <div className="space-y-2">
-            <label htmlFor="description" className="text-sm font-medium">
+            <label className="text-sm font-medium text-gray-700">
               Description
             </label>
             <Textarea
-              id="description"
               value={description}
               onChange={(e) => setDescription(e.target.value)}
+              className="border-gray-200 focus:border-indigo-500 focus:ring-indigo-500 rounded"
               placeholder="Enter task description"
               required
             />
           </div>
-          <div className="flex justify-end space-x-2">
+          <div className="flex justify-end space-x-2 pt-4">
             <Button
               type="button"
               variant="outline"
               onClick={() => setOpen(false)}
+              className="text-gray-700 border-gray-200 hover:bg-gray-50 rounded"
             >
               Cancel
             </Button>
-            <Button type="submit">Create Task</Button>
+            <Button
+              type="submit"
+              className="gradient-primary text-white rounded"
+            >
+              Create Task
+            </Button>
           </div>
         </form>
       </DialogContent>

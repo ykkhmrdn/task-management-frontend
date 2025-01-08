@@ -69,7 +69,7 @@ export function TaskList({
         items={tasks.map((task) => task._id)}
         strategy={verticalListSortingStrategy}
       >
-        <div className="space-y-4">
+        <div className="space-y-3 p-2 rounded-lg">
           {tasks.map((task) => (
             <TaskItem
               key={task._id}
