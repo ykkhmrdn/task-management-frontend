@@ -1,6 +1,10 @@
 import axios from "axios";
 import { Task } from "@/types/task";
 
+// const api = axios.create({
+//   baseURL: process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5001'
+// });
+
 const api = axios.create({
   baseURL: process.env.NEXT_PUBLIC_API_URL || "http://localhost:5001",
 });
@@ -17,7 +21,7 @@ export const taskApi = {
     return response.data;
   },
 
-  createTask: async (data: Pick<Task, "title" | "description">) => {
+  createTask: async (data: Pick<Task, "title" | "description" | "status">) => {
     const response = await api.post<ApiResponse<Task>>("/tasks", data);
     return response.data;
   },
@@ -32,7 +36,9 @@ export const taskApi = {
     return response.data;
   },
 
-  reorderTasks: async (tasks: { _id: string; order: number }[]) => {
+  reorderTasks: async (
+    tasks: { _id: string; order: number; status: string }[]
+  ) => {
     const response = await api.put<ApiResponse<Task[]>>("/tasks/reorder", {
       tasks,
     });
