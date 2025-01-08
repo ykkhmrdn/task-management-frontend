@@ -1,3 +1,4 @@
+// page.tsx
 "use client";
 
 import { useEffect, useState } from "react";
@@ -9,6 +10,7 @@ import { CreateTaskDialog } from "@/components/tasks/create-task-dialog";
 
 export default function Home() {
   const [tasks, setTasks] = useState<Task[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
   const { toast } = useToast();
   const [isCreateDialogOpen, setCreateDialogOpen] = useState(false);
 
@@ -21,6 +23,7 @@ export default function Home() {
 
   async function loadTasks() {
     try {
+      setIsLoading(true);
       const response = await taskApi.getTasks();
       if (response.success) {
         setTasks(response.data);
@@ -31,6 +34,8 @@ export default function Home() {
         description: "Failed to load tasks",
         variant: "destructive",
       });
+    } finally {
+      setIsLoading(false);
     }
   }
 
@@ -38,9 +43,13 @@ export default function Home() {
     newTask: Pick<Task, "title" | "description">
   ) {
     try {
-      const response = await taskApi.createTask(newTask);
+      const response = await taskApi.createTask({
+        ...newTask,
+        order: -1,
+      });
       if (response.success) {
-        setTasks((prev) => [...prev, response.data]);
+        await loadTasks();
+        setCreateDialogOpen(false);
         toast({
           title: "Success",
           description: "Task created successfully",
@@ -108,8 +117,16 @@ export default function Home() {
     }
   }
 
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="text-lg">Loading...</div>
+      </div>
+    );
+  }
+
   return (
-    <div className="board-container">
+    <div className="min-h-screen bg-gradient-to-br from-indigo-50 to-white">
       <nav className="sticky top-0 z-10 bg-white/80 backdrop-blur-md border-b border-slate-200">
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
@@ -124,8 +141,9 @@ export default function Home() {
           </div>
         </div>
       </nav>
+
       <main className="container mx-auto px-4 py-8">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <BoardColumn
             title="To Do"
             color="var(--accent-purple)"
