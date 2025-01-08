@@ -132,6 +132,6 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 ## Contact
 
 zyxkoo - ykkhmrdn@gmail.com
-Project Link: [https://github.com/yourusername/task-management](https://github.com/yourusername/task-management)
+Project Link: [https://github.com/ykkhmrdn/task-management-frontend.git]
 
 ---
