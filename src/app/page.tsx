@@ -1,4 +1,3 @@
-// page.tsx
 "use client";
 
 import { useEffect, useState, useCallback } from "react";
@@ -10,7 +9,7 @@ import { CreateTaskDialog } from "@/components/tasks/create-task-dialog";
 
 export default function Home() {
   const [tasks, setTasks] = useState<Task[]>([]);
-  const [isLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(true);
   const { toast } = useToast();
   const [isCreateDialogOpen, setCreateDialogOpen] = useState(false);
 
@@ -19,26 +18,29 @@ export default function Home() {
 
   const loadTasks = useCallback(async () => {
     try {
+      setIsLoading(true);
       const response = await taskApi.getTasks();
       if (response.success) {
         setTasks(response.data);
       }
-    } catch (err) {
+    } catch {
       toast({
         title: "Error",
         description: "Failed to load tasks",
         variant: "destructive",
       });
+    } finally {
+      setIsLoading(false);
     }
-  }, [toast]); // Tambahkan dependency toast
+  }, [toast]);
 
   useEffect(() => {
     loadTasks();
   }, [loadTasks]);
 
-  async function handleCreateTask(
+  const handleCreateTask = async (
     newTask: Pick<Task, "title" | "description">
-  ) {
+  ) => {
     try {
       const response = await taskApi.createTask({
         ...newTask,
@@ -52,16 +54,16 @@ export default function Home() {
           description: "Task created successfully",
         });
       }
-    } catch (err) {
+    } catch {
       toast({
         title: "Error",
         description: "Failed to create task",
         variant: "destructive",
       });
     }
-  }
+  };
 
-  async function handleTaskComplete(id: string, completed: boolean) {
+  const handleTaskComplete = async (id: string, completed: boolean) => {
     try {
       const response = await taskApi.updateTask(id, { isCompleted: completed });
       if (response.success) {
@@ -71,16 +73,16 @@ export default function Home() {
           )
         );
       }
-    } catch (err) {
+    } catch {
       toast({
         title: "Error",
         description: "Failed to update task",
         variant: "destructive",
       });
     }
-  }
+  };
 
-  async function handleTaskDelete(id: string) {
+  const handleTaskDelete = async (id: string) => {
     try {
       const response = await taskApi.deleteTask(id);
       if (response.success) {
@@ -90,29 +92,31 @@ export default function Home() {
           description: "Task deleted successfully",
         });
       }
-    } catch (err) {
+    } catch {
       toast({
         title: "Error",
         description: "Failed to delete task",
         variant: "destructive",
       });
     }
-  }
+  };
 
-  async function handleTasksReorder(updates: { _id: string; order: number }[]) {
+  const handleTasksReorder = async (
+    updates: { _id: string; order: number }[]
+  ) => {
     try {
       const response = await taskApi.reorderTasks(updates);
       if (response.success) {
         setTasks(response.data);
       }
-    } catch (err) {
+    } catch {
       toast({
         title: "Error",
         description: "Failed to reorder tasks",
         variant: "destructive",
       });
     }
-  }
+  };
 
   if (isLoading) {
     return (
