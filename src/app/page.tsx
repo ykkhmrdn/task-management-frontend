@@ -1,7 +1,7 @@
 // page.tsx
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { Task } from "@/types/task";
 import { taskApi } from "@/lib/api";
 import { BoardColumn } from "@/components/tasks/board-column";
@@ -10,34 +10,31 @@ import { CreateTaskDialog } from "@/components/tasks/create-task-dialog";
 
 export default function Home() {
   const [tasks, setTasks] = useState<Task[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading] = useState(true);
   const { toast } = useToast();
   const [isCreateDialogOpen, setCreateDialogOpen] = useState(false);
 
   const todoTasks = tasks.filter((t) => !t.isCompleted);
   const completedTasks = tasks.filter((t) => t.isCompleted);
 
-  useEffect(() => {
-    loadTasks();
-  }, []);
-
-  async function loadTasks() {
+  const loadTasks = useCallback(async () => {
     try {
-      setIsLoading(true);
       const response = await taskApi.getTasks();
       if (response.success) {
         setTasks(response.data);
       }
-    } catch (error) {
+    } catch (err) {
       toast({
         title: "Error",
         description: "Failed to load tasks",
         variant: "destructive",
       });
-    } finally {
-      setIsLoading(false);
     }
-  }
+  }, [toast]); // Tambahkan dependency toast
+
+  useEffect(() => {
+    loadTasks();
+  }, [loadTasks]);
 
   async function handleCreateTask(
     newTask: Pick<Task, "title" | "description">
@@ -55,7 +52,7 @@ export default function Home() {
           description: "Task created successfully",
         });
       }
-    } catch (error) {
+    } catch (err) {
       toast({
         title: "Error",
         description: "Failed to create task",
@@ -74,7 +71,7 @@ export default function Home() {
           )
         );
       }
-    } catch (error) {
+    } catch (err) {
       toast({
         title: "Error",
         description: "Failed to update task",
@@ -93,7 +90,7 @@ export default function Home() {
           description: "Task deleted successfully",
         });
       }
-    } catch (error) {
+    } catch (err) {
       toast({
         title: "Error",
         description: "Failed to delete task",
@@ -108,7 +105,7 @@ export default function Home() {
       if (response.success) {
         setTasks(response.data);
       }
-    } catch (error) {
+    } catch (err) {
       toast({
         title: "Error",
         description: "Failed to reorder tasks",
